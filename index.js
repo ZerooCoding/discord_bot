@@ -5,10 +5,10 @@ const fetch = require('node-fetch');
 const bot = new Client();
 const prefix = '!';
 
-const token = 'your_bot_client_secret_goes_here';
+const token = 'YOUR-BOT-TOKEN';
 
-var count = 0;
-var limit = 10;
+var count = 0; //I used this to iterate over the list of memes, so that each command sends a new meme. When it reaches the limit, it gets set to 0, this makes sure that we keep on getting a different meme until enough new memes are posted on the given subreddit and it rolls back to 0 to send those new ones.
+var limit = 10; //number of memes one fetch brings with itself, count is used to iterate over these. When count gets equal to limit, count becomes 0.
 
 bot.on('ready', () => {
     console.log('This bot is online!');
@@ -56,7 +56,7 @@ bot.on('message', msg => {
         let word = args.join(" ");
         urban(word).first(json => {
             if (!json) return msg.channel.send('No results found for this word.');
-            let def = (json.definition).replace(/[\[\]]/g, '');
+            let def = (json.definition).replace(/[\[\]]/g, ''); //Used regex to delete square breackets from the definition of a word.
             const urbanEmbed = new MessageEmbed()
             .setColor('#ff0000')
             .setTitle(json.word)
@@ -122,7 +122,7 @@ bot.on('message', msg => {
         if (!args.length) {
             return msg.reply('You forgot to mention a subreddit after the cmd. Example: !reddit wholesomememes');
         }
-        fetch(`https://www.reddit.com/r/${args.join()}/new.json?limit=${limit}`)
+        fetch(`https://www.reddit.com/r/${args.join()}/rising.json?limit=${limit}`)
         .then(res => res.json())
         .then(data => {
             if (data.data.children[0] != null) {
